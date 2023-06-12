@@ -1,0 +1,14 @@
+{
+  "name": "jdsl",
+  "version": "1.0.0",
+  "description": "JDSL; Tom's a genius",
+  "keywords": [
+    "jdsl"
+  ],
+  "main": "jdsl.js",
+  "scripts": {
+    "test": "node jdsl.js"
+  },
+  "type": "module",
+  "license": "MIT"
+}
