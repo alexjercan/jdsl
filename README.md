@@ -3,9 +3,9 @@
 # JDSL
 ##### Tom's a genius
 
-</div>
-
 ![JDSL](./resources/jdsl.jpg)
+
+</div>
 
 ## ⇁ Installation
 
