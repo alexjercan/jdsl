@@ -12,8 +12,12 @@ function cmd(...command) {
   });
 }
 
-async function checkout(revision) {
-    await cmd("svn", "checkout", revision);
+async function checkout(remote) {
+    await cmd("svn", "checkout", remote);
+}
+
+async function update(revision) {
+    await cmd("svn", "update", "-r", revision);
 }
 
 function loadJSON(path) {
@@ -31,7 +35,7 @@ async function createClass(name) {
 
     let prototypes = [];
     for (const revision of revisions) {
-        await checkout(revision);
+        await update(revision);
         prototypes.push(loadJS(path.resolve(process.cwd(), `${name}.js`)));
     }
 
@@ -49,4 +53,6 @@ export async function init(remote) {
 export async function run(className, functionName) {
     let entry = await createClass(className);
     new entry()[functionName]();
+
+    update("HEAD");
 }
