@@ -1,6 +1,6 @@
 import { readFileSync } from "fs";
-import { spawn } from "child_process";
 import path from "path";
+import { spawn } from "child_process";
 
 function cmd(...command) {
   let p = spawn(command[0], command.slice(1));
@@ -42,8 +42,11 @@ async function createClass(name) {
     return new Function([prefix, body, suffix].join("\n"))();
 }
 
-let className = process.argv[2];
-let functionName = process.argv[3];
-let entry = await createClass(className);
+export async function init(remote) {
+    await checkout(remote);
+}
 
-new entry()[functionName]();
+export async function run(className, functionName) {
+    let entry = await createClass(className);
+    new entry()[functionName]();
+}

@@ -5,10 +5,12 @@
   "keywords": [
     "jdsl"
   ],
-  "main": "jdsl.js",
-  "scripts": {
-    "test": "node jdsl.js"
+  "bin": {
+    "jdsl": "./main.js"
   },
   "type": "module",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "yargs": "^17.7.2"
+  }
 }
