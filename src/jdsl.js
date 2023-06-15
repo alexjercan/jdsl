@@ -1,6 +1,7 @@
 import { readFileSync, readdirSync } from "fs";
 import path from "path";
 import { spawn } from "child_process";
+import readline from "readline";
 
 function cmd(...command) {
   let p = spawn(command[0], command.slice(1));
@@ -68,7 +69,7 @@ export async function init(remote) {
 
 export async function run(className, functionName) {
     let entry = await bundle(className);
-    new entry()[functionName]();
+    new entry()[functionName]({readline});
 
     await update("HEAD");
 }

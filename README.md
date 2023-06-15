@@ -95,3 +95,14 @@ jdsl run Hello SayHelloWorld
 
 The build tool will create a javascript function that exports the Hello class
 and then it calls the function.
+
+## ⇁ Notes
+
+The entry point function will be able to get as argument an object with
+different util modules. So far you can access `readline`.
+
+```js
+Hello.prototype.SayHelloWorld = function({readline}) {
+    console.log("Hello World");
+};
+```
