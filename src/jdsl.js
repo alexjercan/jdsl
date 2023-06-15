@@ -1,4 +1,4 @@
-import { readFileSync } from "fs";
+import { readFileSync, readdirSync } from "fs";
 import path from "path";
 import { spawn } from "child_process";
 
@@ -18,6 +18,10 @@ async function checkout(remote) {
 
 async function update(revision) {
     await cmd("svn", "update", "-r", revision);
+}
+
+async function revision() {
+    return await cmd("svn", "info", "--show-item", "last-changed-revision");
 }
 
 function loadJSON(path) {
@@ -41,9 +45,25 @@ async function createClass(name) {
 
     let prefix = `function ${className}() {}`;
     let body = prototypes.join("\n");
-    let suffix = `return ${className};`;
 
-    return new Function([prefix, body, suffix].join("\n"))();
+    return [prefix, body].join("\n");
+}
+
+async function bundle(className) {
+    const extension = ".json";
+    const files = readdirSync(process.cwd());
+    const jsonFiles = files
+        .filter((file) => path.extname(file).toLowerCase() === extension)
+        .map((file) => path.basename(file, extension));
+
+    let body = [];
+    for (const jsonFile of jsonFiles) {
+        body.push(await createClass(jsonFile));
+        await update("HEAD");
+    }
+    body.push(`return ${className};`);
+
+    return new Function(body.join("\n"))();
 }
 
 export async function init(remote) {
@@ -51,8 +71,8 @@ export async function init(remote) {
 }
 
 export async function run(className, functionName) {
-    let entry = await createClass(className);
+    let entry = await bundle(className);
     new entry()[functionName]();
 
-    update("HEAD");
+    await update("HEAD");
 }
