@@ -20,10 +20,6 @@ async function update(revision) {
     await cmd("svn", "update", "-r", revision);
 }
 
-async function revision() {
-    return await cmd("svn", "info", "--show-item", "last-changed-revision");
-}
-
 function loadJSON(path) {
     return JSON.parse(readFileSync(new URL(path, import.meta.url)));
 }
