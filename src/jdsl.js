@@ -1,81 +1,81 @@
-import { readFileSync, readdirSync } from 'fs'
-import path from 'path'
-import { spawn } from 'child_process'
-import readline from 'readline'
+import { readFileSync, readdirSync } from 'fs';
+import path from 'path';
+import { spawn } from 'child_process';
+import readline from 'readline';
 
 function cmd(...command) {
-    let p = spawn(command[0], command.slice(1))
-    let result = ''
+    let p = spawn(command[0], command.slice(1));
+    let result = '';
     return new Promise((resolveFunc) => {
         p.stdout.on('data', (x) => {
-            result += x
-        })
+            result += x;
+        });
         p.stderr.on('data', (x) => {
-            result += x
-        })
+            result += x;
+        });
         p.on('exit', (_) => {
-            resolveFunc(result)
-        })
-    })
+            resolveFunc(result);
+        });
+    });
 }
 
 async function checkout(remote) {
-    await cmd('svn', 'checkout', remote)
+    await cmd('svn', 'checkout', remote);
 }
 
 async function update(revision) {
-    await cmd('svn', 'update', '-r', revision)
+    await cmd('svn', 'update', '-r', revision);
 }
 
 function loadJSON(path) {
-    return JSON.parse(readFileSync(new URL(path, import.meta.url)))
+    return JSON.parse(readFileSync(new URL(path, import.meta.url)));
 }
 
 function loadJS(path) {
-    return readFileSync(new URL(path, import.meta.url))
+    return readFileSync(new URL(path, import.meta.url));
 }
 
 async function createClass(name) {
-    const jdsl = loadJSON(path.resolve(process.cwd(), `${name}.json`))
-    const className = jdsl.Class
-    const revisions = jdsl.Functions
+    const jdsl = loadJSON(path.resolve(process.cwd(), `${name}.json`));
+    const className = jdsl.Class;
+    const revisions = jdsl.Functions;
 
-    let prototypes = []
+    let prototypes = [];
     for (const revision of revisions) {
-        await update(revision)
-        prototypes.push(loadJS(path.resolve(process.cwd(), `${name}.js`)))
+        await update(revision);
+        prototypes.push(loadJS(path.resolve(process.cwd(), `${name}.js`)));
     }
 
-    let prefix = `function ${className}() {}`
-    let body = prototypes.join('\n')
+    let prefix = `function ${className}() {}`;
+    let body = prototypes.join('\n');
 
-    return [prefix, body].join('\n')
+    return [prefix, body].join('\n');
 }
 
 async function bundle(className) {
-    const extension = '.json'
-    const files = readdirSync(process.cwd())
+    const extension = '.json';
+    const files = readdirSync(process.cwd());
     const jsonFiles = files
         .filter((file) => path.extname(file).toLowerCase() === extension)
-        .map((file) => path.basename(file, extension))
+        .map((file) => path.basename(file, extension));
 
-    let body = []
+    let body = [];
     for (const jsonFile of jsonFiles) {
-        body.push(await createClass(jsonFile))
-        await update('HEAD')
+        body.push(await createClass(jsonFile));
+        await update('HEAD');
     }
-    body.push(`return ${className};`)
+    body.push(`return ${className};`);
 
-    return new Function(body.join('\n'))()
+    return new Function(body.join('\n'))();
 }
 
 export async function init(remote) {
-    await checkout(remote)
+    await checkout(remote);
 }
 
 export async function run(className, functionName) {
-    let entry = await bundle(className)
-    new entry()[functionName]({ readline })
+    let entry = await bundle(className);
+    new entry()[functionName]({ readline });
 
-    await update('HEAD')
+    await update('HEAD');
 }

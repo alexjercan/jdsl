@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
-import yargs from 'yargs/yargs'
-import { hideBin } from 'yargs/helpers'
+import yargs from 'yargs/yargs';
+import { hideBin } from 'yargs/helpers';
 
-import { run, init } from './src/jdsl.js'
+import { run, init } from './src/jdsl.js';
 
 yargs(hideBin(process.argv))
     .command(
@@ -13,10 +13,10 @@ yargs(hideBin(process.argv))
             return yargs.positional('remote', {
                 describe: 'the URL to the remote repository',
                 type: 'string',
-            })
+            });
         },
         (argv) => {
-            init(argv.remote)
+            init(argv.remote);
         }
     )
     .command(
@@ -31,10 +31,10 @@ yargs(hideBin(process.argv))
                 .positional('functionName', {
                     describe: 'the name of the entrypoint function',
                     type: 'string',
-                })
+                });
         },
         (argv) => {
-            run(argv.className, argv.functionName)
+            run(argv.className, argv.functionName);
         }
     )
-    .parse()
+    .parse();
