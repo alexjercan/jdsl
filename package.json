@@ -1,16 +1,19 @@
 {
-  "name": "jdsl",
-  "version": "1.0.0",
-  "description": "JDSL; Tom's a genius",
-  "keywords": [
-    "jdsl"
-  ],
-  "bin": {
-    "jdsl": "./main.js"
-  },
-  "type": "module",
-  "license": "MIT",
-  "dependencies": {
-    "yargs": "^17.7.2"
-  }
+    "name": "jdsl",
+    "version": "1.0.0",
+    "description": "JDSL; Tom's a genius",
+    "keywords": [
+        "jdsl"
+    ],
+    "bin": {
+        "jdsl": "./main.js"
+    },
+    "type": "module",
+    "license": "MIT",
+    "dependencies": {
+        "yargs": "^17.7.2"
+    },
+    "devDependencies": {
+        "prettier": "^2.8.8"
+    }
 }
